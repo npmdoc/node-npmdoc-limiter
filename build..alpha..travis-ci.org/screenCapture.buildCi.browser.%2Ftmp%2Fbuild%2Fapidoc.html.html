@@ -1,4 +1,4 @@
-<div class="apidocDiv">
+<html><head></head><body><div class="apidocDiv">
 <style>
 /*csslint
 */
@@ -47,17 +47,10 @@
 }
 </style>
 <h1>api documentation for
-    <a
-
-        href="https://github.com/jhurliman/node-rate-limiter#readme"
-
-    >limiter (v1.1.0)</a>
+    <a href="https://github.com/jhurliman/node-rate-limiter#readme">limiter (v1.1.0)</a>
 </h1>
 <h4>A generic rate limiter for node.js. Useful for API clients, web crawling, or other tasks that need to be throttled</h4>
-<div class="apidocSectionDiv"><a
-    href="#apidoc.tableOfContents"
-    id="apidoc.tableOfContents"
-><h1>table of contents</h1></a><ol>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
 
     <li class="apidocModuleLi"><a href="#apidoc.module.limiter">module limiter</a><ol>
 
@@ -426,10 +419,10 @@
     </h2>
     <ul>
     <li>description and source-code<pre class="apidocCodePre">RateLimiter.prototype.removeTokens = function (count, callback) {
-  // Make sure the request isn&#x27;t for more than we can handle
-  if (count &#x3e; this.tokenBucket.bucketSize) {
-    process.nextTick(callback.bind(null, &#x27;Requested tokens &#x27; + count +
-      &#x27; exceeds maximum tokens per interval &#x27; + this.tokenBucket.bucketSize,
+  // Make sure the request isn't for more than we can handle
+  if (count &gt; this.tokenBucket.bucketSize) {
+    process.nextTick(callback.bind(null, 'Requested tokens ' + count +
+      ' exceeds maximum tokens per interval ' + this.tokenBucket.bucketSize,
       null));
     return false;
   }
@@ -439,14 +432,14 @@
 
   // Advance the current interval and reset the current interval token count
   // if needed
-  if (now - this.curIntervalStart &#x3e;= this.tokenBucket.interval) {
+  if (now - this.curIntervalStart &gt;= this.tokenBucket.interval) {
     this.curIntervalStart = now;
     this.tokensThisInterval = 0;
   }
 
-  // If we don&#x27;t have enough tokens left in this interval, wait until the
+  // If we don't have enough tokens left in this interval, wait until the
   // next interval
-  if (count &#x3e; this.tokenBucket.tokensPerInterval - this.tokensThisInterval) {
+  if (count &gt; this.tokenBucket.tokensPerInterval - this.tokensThisInterval) {
     if (this.fireImmediately) {
       process.nextTick(callback.bind(null, null, -1));
     } else {
@@ -483,21 +476,21 @@
     </h2>
     <ul>
     <li>description and source-code<pre class="apidocCodePre">RateLimiter.prototype.tryRemoveTokens = function (count) {
-  // Make sure the request isn&#x27;t for more than we can handle
-  if (count &#x3e; this.tokenBucket.bucketSize)
+  // Make sure the request isn't for more than we can handle
+  if (count &gt; this.tokenBucket.bucketSize)
     return false;
 
   var now = Date.now();
 
   // Advance the current interval and reset the current interval token count
   // if needed
-  if (now - this.curIntervalStart &#x3e;= this.tokenBucket.interval) {
+  if (now - this.curIntervalStart &gt;= this.tokenBucket.interval) {
     this.curIntervalStart = now;
     this.tokensThisInterval = 0;
   }
 
-  // If we don&#x27;t have enough tokens left in this interval, return false
-  if (count &#x3e; this.tokenBucket.tokensPerInterval - this.tokensThisInterval)
+  // If we don't have enough tokens left in this interval, return false
+  if (count &gt; this.tokenBucket.tokensPerInterval - this.tokensThisInterval)
     return false;
 
   // Try to remove the requested number of tokens from the token bucket
@@ -519,15 +512,15 @@
   this.bucketSize = bucketSize;
   this.tokensPerInterval = tokensPerInterval;
 
-  if (typeof interval === &#x27;string&#x27;) {
+  if (typeof interval === 'string') {
     switch (interval) {
-      case &#x27;sec&#x27;: case &#x27;second&#x27;:
+      case 'sec': case 'second':
         this.interval = 1000; break;
-      case &#x27;min&#x27;: case &#x27;minute&#x27;:
+      case 'min': case 'minute':
         this.interval = 1000 * 60; break;
-      case &#x27;hr&#x27;: case &#x27;hour&#x27;:
+      case 'hr': case 'hour':
         this.interval = 1000 * 60 * 60; break;
-      case &#x27;day&#x27;:
+      case 'day':
         this.interval = 1000 * 60 * 60 * 24; break;
     }
   } else {
@@ -585,8 +578,8 @@
   }
 
   // Make sure the bucket can hold the requested number of tokens
-  if (count &#x3e; this.bucketSize) {
-    process.nextTick(callback.bind(null, &#x27;Requested tokens &#x27; + count + &#x27; exceeds bucket size &#x27; +
+  if (count &gt; this.bucketSize) {
+    process.nextTick(callback.bind(null, 'Requested tokens ' + count + ' exceeds bucket size ' +
       this.bucketSize, null));
     return false;
   }
@@ -594,8 +587,8 @@
   // Drip new tokens into this bucket
   this.drip();
 
-  // If we don&#x27;t have enough tokens in this bucket, come back later
-  if (count &#x3e; this.content)
+  // If we don't have enough tokens in this bucket, come back later
+  if (count &gt; this.content)
     return comeBackLater();
 
   if (this.parentBucket) {
@@ -604,12 +597,12 @@
       if (err) return callback(err, null);
 
       // Check that we still have enough tokens in this bucket
-      if (count &#x3e; self.content)
+      if (count &gt; self.content)
         return comeBackLater();
 
       // Tokens were removed from the parent bucket, now remove them from
       // this bucket and fire the callback. Note that we look at the current
-      // bucket and parent bucket&#x27;s remaining tokens and return the smaller
+      // bucket and parent bucket's remaining tokens and return the smaller
       // of the two values
       self.content -= count;
       callback(null, Math.min(remainingTokens, self.content));
@@ -647,18 +640,18 @@
     return true;
 
   // Make sure the bucket can hold the requested number of tokens
-  if (count &#x3e; this.bucketSize)
+  if (count &gt; this.bucketSize)
     return false;
 
   // Drip new tokens into this bucket
   this.drip();
 
-  // If we don&#x27;t have enough tokens in this bucket, return false
-  if (count &#x3e; this.content)
+  // If we don't have enough tokens in this bucket, return false
+  if (count &gt; this.content)
     return false;
 
   // Try to remove the requested tokens from the parent bucket
-  if (this.parentBucket &#x26;&#x26; !this.parent.tryRemoveTokens(count))
+  if (this.parentBucket &amp;&amp; !this.parent.tryRemoveTokens(count))
     return false;
 
   // Remove the requested tokens from this bucket and return
@@ -724,7 +717,7 @@
 To get the number of remaining tokens **outside** the `removeTokens`-callback
 simply use the `getTokensRemaining`-method.
 ```javascript
-var RateLimiter = require(&#x27;limiter&#x27;).RateLimiter;
+var RateLimiter = require('limiter').RateLimiter;
 var limiter = new RateLimiter(1, 250);
 
 // returns 1 since we did not remove a token and our number of tokens per interval is 1
@@ -749,10 +742,10 @@ var FILL_RATE = 1024 * 1024 * 50; // 50KB/sec sustained rate
     </h2>
     <ul>
     <li>description and source-code<pre class="apidocCodePre">removeTokens = function (count, callback) {
-  // Make sure the request isn&#x27;t for more than we can handle
-  if (count &#x3e; this.tokenBucket.bucketSize) {
-    process.nextTick(callback.bind(null, &#x27;Requested tokens &#x27; + count +
-      &#x27; exceeds maximum tokens per interval &#x27; + this.tokenBucket.bucketSize,
+  // Make sure the request isn't for more than we can handle
+  if (count &gt; this.tokenBucket.bucketSize) {
+    process.nextTick(callback.bind(null, 'Requested tokens ' + count +
+      ' exceeds maximum tokens per interval ' + this.tokenBucket.bucketSize,
       null));
     return false;
   }
@@ -762,14 +755,14 @@ var FILL_RATE = 1024 * 1024 * 50; // 50KB/sec sustained rate
 
   // Advance the current interval and reset the current interval token count
   // if needed
-  if (now - this.curIntervalStart &#x3e;= this.tokenBucket.interval) {
+  if (now - this.curIntervalStart &gt;= this.tokenBucket.interval) {
     this.curIntervalStart = now;
     this.tokensThisInterval = 0;
   }
 
-  // If we don&#x27;t have enough tokens left in this interval, wait until the
+  // If we don't have enough tokens left in this interval, wait until the
   // next interval
-  if (count &#x3e; this.tokenBucket.tokensPerInterval - this.tokensThisInterval) {
+  if (count &gt; this.tokenBucket.tokensPerInterval - this.tokensThisInterval) {
     if (this.fireImmediately) {
       process.nextTick(callback.bind(null, null, -1));
     } else {
@@ -795,10 +788,10 @@ var FILL_RATE = 1024 * 1024 * 50; // 50KB/sec sustained rate
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">...
 ```javascript
-var RateLimiter = require(&#x27;limiter&#x27;).RateLimiter;
+var RateLimiter = require('limiter').RateLimiter;
 // Allow 150 requests per hour (the Twitter search limit). Also understands
-// &#x27;second&#x27;, &#x27;minute&#x27;, &#x27;day&#x27;, or a number of milliseconds
-var limiter = new RateLimiter(150, &#x27;hour&#x27;);
+// 'second', 'minute', 'day', or a number of milliseconds
+var limiter = new RateLimiter(150, 'hour');
 
 // Throttle requests
 limiter.<span class="apidocCodeKeywordSpan">removeTokens</span>(1, function(err, remainingRequests) {
@@ -822,21 +815,21 @@ callMyRequestSendingFunction(...);
     </h2>
     <ul>
     <li>description and source-code<pre class="apidocCodePre">tryRemoveTokens = function (count) {
-  // Make sure the request isn&#x27;t for more than we can handle
-  if (count &#x3e; this.tokenBucket.bucketSize)
+  // Make sure the request isn't for more than we can handle
+  if (count &gt; this.tokenBucket.bucketSize)
     return false;
 
   var now = Date.now();
 
   // Advance the current interval and reset the current interval token count
   // if needed
-  if (now - this.curIntervalStart &#x3e;= this.tokenBucket.interval) {
+  if (now - this.curIntervalStart &gt;= this.tokenBucket.interval) {
     this.curIntervalStart = now;
     this.tokensThisInterval = 0;
   }
 
-  // If we don&#x27;t have enough tokens left in this interval, return false
-  if (count &#x3e; this.tokenBucket.tokensPerInterval - this.tokensThisInterval)
+  // If we don't have enough tokens left in this interval, return false
+  if (count &gt; this.tokenBucket.tokensPerInterval - this.tokensThisInterval)
     return false;
 
   // Try to remove the requested number of tokens from the token bucket
@@ -848,13 +841,13 @@ callMyRequestSendingFunction(...);
 A synchronous method, tryRemoveTokens(), is available in both RateLimiter and TokenBucket. This will return immediately with a boolean
  value indicating if the token removal was successful.
 ```javascript
-var RateLimiter = require(&#x27;limiter&#x27;).RateLimiter;
-var limiter = new RateLimiter(10, &#x27;second&#x27;);
+var RateLimiter = require('limiter').RateLimiter;
+var limiter = new RateLimiter(10, 'second');
 
 if (limiter.<span class="apidocCodeKeywordSpan">tryRemoveTokens</span>(5))
-  console.log(&#x27;Tokens removed&#x27;);
+  console.log('Tokens removed');
 else
-  console.log(&#x27;No tokens removed&#x27;);
+  console.log('No tokens removed');
 ```
 
 To get the number of remaining tokens **outside** the `removeTokens`-callback
@@ -890,7 +883,7 @@ simply use the `getTokensRemaining`-method.
 To get the number of remaining tokens **outside** the `removeTokens`-callback
 simply use the `getTokensRemaining`-method.
 ```javascript
-var RateLimiter = require(&#x27;limiter&#x27;).RateLimiter;
+var RateLimiter = require('limiter').RateLimiter;
 var limiter = new RateLimiter(1, 250);
 
 // returns 1 since we did not remove a token and our number of tokens per interval is 1
@@ -920,10 +913,10 @@ var FILL_RATE = 1024 * 1024 * 50; // 50KB/sec sustained rate
     </h2>
     <ul>
     <li>description and source-code<pre class="apidocCodePre">removeTokens = function (count, callback) {
-  // Make sure the request isn&#x27;t for more than we can handle
-  if (count &#x3e; this.tokenBucket.bucketSize) {
-    process.nextTick(callback.bind(null, &#x27;Requested tokens &#x27; + count +
-      &#x27; exceeds maximum tokens per interval &#x27; + this.tokenBucket.bucketSize,
+  // Make sure the request isn't for more than we can handle
+  if (count &gt; this.tokenBucket.bucketSize) {
+    process.nextTick(callback.bind(null, 'Requested tokens ' + count +
+      ' exceeds maximum tokens per interval ' + this.tokenBucket.bucketSize,
       null));
     return false;
   }
@@ -933,14 +926,14 @@ var FILL_RATE = 1024 * 1024 * 50; // 50KB/sec sustained rate
 
   // Advance the current interval and reset the current interval token count
   // if needed
-  if (now - this.curIntervalStart &#x3e;= this.tokenBucket.interval) {
+  if (now - this.curIntervalStart &gt;= this.tokenBucket.interval) {
     this.curIntervalStart = now;
     this.tokensThisInterval = 0;
   }
 
-  // If we don&#x27;t have enough tokens left in this interval, wait until the
+  // If we don't have enough tokens left in this interval, wait until the
   // next interval
-  if (count &#x3e; this.tokenBucket.tokensPerInterval - this.tokensThisInterval) {
+  if (count &gt; this.tokenBucket.tokensPerInterval - this.tokensThisInterval) {
     if (this.fireImmediately) {
       process.nextTick(callback.bind(null, null, -1));
     } else {
@@ -966,10 +959,10 @@ var FILL_RATE = 1024 * 1024 * 50; // 50KB/sec sustained rate
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">...
 ```javascript
-var RateLimiter = require(&#x27;limiter&#x27;).RateLimiter;
+var RateLimiter = require('limiter').RateLimiter;
 // Allow 150 requests per hour (the Twitter search limit). Also understands
-// &#x27;second&#x27;, &#x27;minute&#x27;, &#x27;day&#x27;, or a number of milliseconds
-var limiter = new RateLimiter(150, &#x27;hour&#x27;);
+// 'second', 'minute', 'day', or a number of milliseconds
+var limiter = new RateLimiter(150, 'hour');
 
 // Throttle requests
 limiter.<span class="apidocCodeKeywordSpan">removeTokens</span>(1, function(err, remainingRequests) {
@@ -998,21 +991,21 @@ callMyRequestSendingFunction(...);
     </h2>
     <ul>
     <li>description and source-code<pre class="apidocCodePre">tryRemoveTokens = function (count) {
-  // Make sure the request isn&#x27;t for more than we can handle
-  if (count &#x3e; this.tokenBucket.bucketSize)
+  // Make sure the request isn't for more than we can handle
+  if (count &gt; this.tokenBucket.bucketSize)
     return false;
 
   var now = Date.now();
 
   // Advance the current interval and reset the current interval token count
   // if needed
-  if (now - this.curIntervalStart &#x3e;= this.tokenBucket.interval) {
+  if (now - this.curIntervalStart &gt;= this.tokenBucket.interval) {
     this.curIntervalStart = now;
     this.tokensThisInterval = 0;
   }
 
-  // If we don&#x27;t have enough tokens left in this interval, return false
-  if (count &#x3e; this.tokenBucket.tokensPerInterval - this.tokensThisInterval)
+  // If we don't have enough tokens left in this interval, return false
+  if (count &gt; this.tokenBucket.tokensPerInterval - this.tokensThisInterval)
     return false;
 
   // Try to remove the requested number of tokens from the token bucket
@@ -1024,13 +1017,13 @@ callMyRequestSendingFunction(...);
 A synchronous method, tryRemoveTokens(), is available in both RateLimiter and TokenBucket. This will return immediately with a boolean
  value indicating if the token removal was successful.
 ```javascript
-var RateLimiter = require(&#x27;limiter&#x27;).RateLimiter;
-var limiter = new RateLimiter(10, &#x27;second&#x27;);
+var RateLimiter = require('limiter').RateLimiter;
+var limiter = new RateLimiter(10, 'second');
 
 if (limiter.<span class="apidocCodeKeywordSpan">tryRemoveTokens</span>(5))
-  console.log(&#x27;Tokens removed&#x27;);
+  console.log('Tokens removed');
 else
-  console.log(&#x27;No tokens removed&#x27;);
+  console.log('No tokens removed');
 ```
 
 To get the number of remaining tokens **outside** the `removeTokens`-callback
@@ -1056,15 +1049,15 @@ simply use the `getTokensRemaining`-method.
   this.bucketSize = bucketSize;
   this.tokensPerInterval = tokensPerInterval;
 
-  if (typeof interval === &#x27;string&#x27;) {
+  if (typeof interval === 'string') {
     switch (interval) {
-      case &#x27;sec&#x27;: case &#x27;second&#x27;:
+      case 'sec': case 'second':
         this.interval = 1000; break;
-      case &#x27;min&#x27;: case &#x27;minute&#x27;:
+      case 'min': case 'minute':
         this.interval = 1000 * 60; break;
-      case &#x27;hr&#x27;: case &#x27;hour&#x27;:
+      case 'hr': case 'hour':
         this.interval = 1000 * 60 * 60; break;
-      case &#x27;day&#x27;:
+      case 'day':
         this.interval = 1000 * 60 * 60 * 24; break;
     }
   } else {
@@ -1127,8 +1120,8 @@ simply use the `getTokensRemaining`-method.
   }
 
   // Make sure the bucket can hold the requested number of tokens
-  if (count &#x3e; this.bucketSize) {
-    process.nextTick(callback.bind(null, &#x27;Requested tokens &#x27; + count + &#x27; exceeds bucket size &#x27; +
+  if (count &gt; this.bucketSize) {
+    process.nextTick(callback.bind(null, 'Requested tokens ' + count + ' exceeds bucket size ' +
       this.bucketSize, null));
     return false;
   }
@@ -1136,8 +1129,8 @@ simply use the `getTokensRemaining`-method.
   // Drip new tokens into this bucket
   this.drip();
 
-  // If we don&#x27;t have enough tokens in this bucket, come back later
-  if (count &#x3e; this.content)
+  // If we don't have enough tokens in this bucket, come back later
+  if (count &gt; this.content)
     return comeBackLater();
 
   if (this.parentBucket) {
@@ -1146,12 +1139,12 @@ simply use the `getTokensRemaining`-method.
       if (err) return callback(err, null);
 
       // Check that we still have enough tokens in this bucket
-      if (count &#x3e; self.content)
+      if (count &gt; self.content)
         return comeBackLater();
 
       // Tokens were removed from the parent bucket, now remove them from
       // this bucket and fire the callback. Note that we look at the current
-      // bucket and parent bucket&#x27;s remaining tokens and return the smaller
+      // bucket and parent bucket's remaining tokens and return the smaller
       // of the two values
       self.content -= count;
       callback(null, Math.min(remainingTokens, self.content));
@@ -1173,10 +1166,10 @@ simply use the `getTokensRemaining`-method.
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">...
 ```javascript
-var RateLimiter = require(&#x27;limiter&#x27;).RateLimiter;
+var RateLimiter = require('limiter').RateLimiter;
 // Allow 150 requests per hour (the Twitter search limit). Also understands
-// &#x27;second&#x27;, &#x27;minute&#x27;, &#x27;day&#x27;, or a number of milliseconds
-var limiter = new RateLimiter(150, &#x27;hour&#x27;);
+// 'second', 'minute', 'day', or a number of milliseconds
+var limiter = new RateLimiter(150, 'hour');
 
 // Throttle requests
 limiter.<span class="apidocCodeKeywordSpan">removeTokens</span>(1, function(err, remainingRequests) {
@@ -1205,18 +1198,18 @@ callMyRequestSendingFunction(...);
     return true;
 
   // Make sure the bucket can hold the requested number of tokens
-  if (count &#x3e; this.bucketSize)
+  if (count &gt; this.bucketSize)
     return false;
 
   // Drip new tokens into this bucket
   this.drip();
 
-  // If we don&#x27;t have enough tokens in this bucket, return false
-  if (count &#x3e; this.content)
+  // If we don't have enough tokens in this bucket, return false
+  if (count &gt; this.content)
     return false;
 
   // Try to remove the requested tokens from the parent bucket
-  if (this.parentBucket &#x26;&#x26; !this.parent.tryRemoveTokens(count))
+  if (this.parentBucket &amp;&amp; !this.parent.tryRemoveTokens(count))
     return false;
 
   // Remove the requested tokens from this bucket and return
@@ -1229,13 +1222,13 @@ callMyRequestSendingFunction(...);
 A synchronous method, tryRemoveTokens(), is available in both RateLimiter and TokenBucket. This will return immediately with a boolean
  value indicating if the token removal was successful.
 ```javascript
-var RateLimiter = require(&#x27;limiter&#x27;).RateLimiter;
-var limiter = new RateLimiter(10, &#x27;second&#x27;);
+var RateLimiter = require('limiter').RateLimiter;
+var limiter = new RateLimiter(10, 'second');
 
 if (limiter.<span class="apidocCodeKeywordSpan">tryRemoveTokens</span>(5))
-  console.log(&#x27;Tokens removed&#x27;);
+  console.log('Tokens removed');
 else
-  console.log(&#x27;No tokens removed&#x27;);
+  console.log('No tokens removed');
 ```
 
 To get the number of remaining tokens **outside** the `removeTokens`-callback
@@ -1309,8 +1302,8 @@ simply use the `getTokensRemaining`-method.
   }
 
   // Make sure the bucket can hold the requested number of tokens
-  if (count &#x3e; this.bucketSize) {
-    process.nextTick(callback.bind(null, &#x27;Requested tokens &#x27; + count + &#x27; exceeds bucket size &#x27; +
+  if (count &gt; this.bucketSize) {
+    process.nextTick(callback.bind(null, 'Requested tokens ' + count + ' exceeds bucket size ' +
       this.bucketSize, null));
     return false;
   }
@@ -1318,8 +1311,8 @@ simply use the `getTokensRemaining`-method.
   // Drip new tokens into this bucket
   this.drip();
 
-  // If we don&#x27;t have enough tokens in this bucket, come back later
-  if (count &#x3e; this.content)
+  // If we don't have enough tokens in this bucket, come back later
+  if (count &gt; this.content)
     return comeBackLater();
 
   if (this.parentBucket) {
@@ -1328,12 +1321,12 @@ simply use the `getTokensRemaining`-method.
       if (err) return callback(err, null);
 
       // Check that we still have enough tokens in this bucket
-      if (count &#x3e; self.content)
+      if (count &gt; self.content)
         return comeBackLater();
 
       // Tokens were removed from the parent bucket, now remove them from
       // this bucket and fire the callback. Note that we look at the current
-      // bucket and parent bucket&#x27;s remaining tokens and return the smaller
+      // bucket and parent bucket's remaining tokens and return the smaller
       // of the two values
       self.content -= count;
       callback(null, Math.min(remainingTokens, self.content));
@@ -1355,10 +1348,10 @@ simply use the `getTokensRemaining`-method.
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">...
 ```javascript
-var RateLimiter = require(&#x27;limiter&#x27;).RateLimiter;
+var RateLimiter = require('limiter').RateLimiter;
 // Allow 150 requests per hour (the Twitter search limit). Also understands
-// &#x27;second&#x27;, &#x27;minute&#x27;, &#x27;day&#x27;, or a number of milliseconds
-var limiter = new RateLimiter(150, &#x27;hour&#x27;);
+// 'second', 'minute', 'day', or a number of milliseconds
+var limiter = new RateLimiter(150, 'hour');
 
 // Throttle requests
 limiter.<span class="apidocCodeKeywordSpan">removeTokens</span>(1, function(err, remainingRequests) {
@@ -1392,18 +1385,18 @@ callMyRequestSendingFunction(...);
     return true;
 
   // Make sure the bucket can hold the requested number of tokens
-  if (count &#x3e; this.bucketSize)
+  if (count &gt; this.bucketSize)
     return false;
 
   // Drip new tokens into this bucket
   this.drip();
 
-  // If we don&#x27;t have enough tokens in this bucket, return false
-  if (count &#x3e; this.content)
+  // If we don't have enough tokens in this bucket, return false
+  if (count &gt; this.content)
     return false;
 
   // Try to remove the requested tokens from the parent bucket
-  if (this.parentBucket &#x26;&#x26; !this.parent.tryRemoveTokens(count))
+  if (this.parentBucket &amp;&amp; !this.parent.tryRemoveTokens(count))
     return false;
 
   // Remove the requested tokens from this bucket and return
@@ -1416,13 +1409,13 @@ callMyRequestSendingFunction(...);
 A synchronous method, tryRemoveTokens(), is available in both RateLimiter and TokenBucket. This will return immediately with a boolean
  value indicating if the token removal was successful.
 ```javascript
-var RateLimiter = require(&#x27;limiter&#x27;).RateLimiter;
-var limiter = new RateLimiter(10, &#x27;second&#x27;);
+var RateLimiter = require('limiter').RateLimiter;
+var limiter = new RateLimiter(10, 'second');
 
 if (limiter.<span class="apidocCodeKeywordSpan">tryRemoveTokens</span>(5))
-  console.log(&#x27;Tokens removed&#x27;);
+  console.log('Tokens removed');
 else
-  console.log(&#x27;No tokens removed&#x27;);
+  console.log('No tokens removed');
 ```
 
 To get the number of remaining tokens **outside** the `removeTokens`-callback
@@ -1439,3 +1432,4 @@ simply use the `getTokensRemaining`-method.
     ]
 </div>
 </div>
+</body></html>
